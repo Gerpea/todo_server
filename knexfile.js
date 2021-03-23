@@ -1,6 +1,7 @@
 module.exports = {
   development: {
-    client: 'sqlite3',
+    client: 'postgresql',
+    connection: 'postgresql://todoadmin:todoadmin@localhost/todoapp',
   },
 
   staging: {
