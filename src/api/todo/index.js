@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
+const { StatusCodes } = require('../../utils')
+
 const { validate } = require('../../middlewares/validate')
 const {
   createTodoValidation,
@@ -30,7 +32,7 @@ router.get('/:id', validate(getTodoValidation), (req, res, next) => {
         if (todo) {
           return res.json(todo)
         }
-        next(`Todo with id: ${id} does not exist`)
+        next({ status: StatusCodes.NOT_FOUND, message: `Todo with id: ${id} does not exist` })
       })
       .catch((error) => next(error))
   } catch (error) {
@@ -59,7 +61,7 @@ router.delete('/:id', validate(deleteTodoValidation), (req, res, next) => {
         if (todo[0]) {
           return res.json(todo[0])
         }
-        next(`Todo with id: ${id} does not exist`)
+        next({ status: StatusCodes.NOT_FOUND, message: `Todo with id: ${id} does not exist` })
       })
       .catch((error) => next(error))
   } catch (error) {
@@ -77,7 +79,7 @@ router.put('/:id', validate(updateTodoValidation), (req, res, next) => {
         if (todo[0]) {
           return res.json(todo[0])
         }
-        next(`Todo with id: ${id} does not exist`)
+        next({ status: StatusCodes.NOT_FOUND, message: `Todo with id: ${id} does not exist` })
       })
       .catch((error) => next(error))
   } catch (error) {
