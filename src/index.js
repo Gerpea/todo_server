@@ -17,7 +17,7 @@ app.use(morgan('dev'))
 app.use('/todo', todoRoute)
 
 app.use((error, req, res, next) => {
-  return res.status(500).json({ error: error.toString() })
+  return res.status(500).json({ error })
 })
 
 app.listen(config.PORT, config.HOSTNAME, () => {
