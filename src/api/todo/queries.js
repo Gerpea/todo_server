@@ -1,7 +1,9 @@
 const knex = require('../../db')
 
-function createTodo(title) {
-  return knex('todos').insert({ title }).returning(['id', 'title', 'created_at', 'updated_at'])
+function createTodo(title, done, parent_id) {
+  return knex('todos')
+    .insert({ title, done, parent_id })
+    .returning(['id', 'title', 'done', 'parent_id', 'created_at', 'updated_at'])
 }
 
 function getTodoById(id) {
@@ -13,11 +15,13 @@ function getTodos() {
 }
 
 function deleteTodoById(id) {
-  return knex('todos').where({ id }).delete(['id', 'title', 'created_at', 'updated_at'])
+  return knex('todos').where({ id }).delete(['id'])
 }
 
 function updateTodoById(id, data) {
-  return knex('todos').where({ id }).update(data, ['id', 'title', 'created_at', 'updated_at'])
+  return knex('todos')
+    .where({ id })
+    .update(data, ['id', 'title', 'done', 'parent_id', 'created_at', 'updated_at'])
 }
 
 module.exports = {

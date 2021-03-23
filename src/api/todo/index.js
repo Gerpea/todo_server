@@ -40,9 +40,9 @@ router.get('/:id', validate(getTodoValidation), (req, res, next) => {
 
 router.post('/', validate(createTodoValidation), (req, res, next) => {
   try {
-    const { title } = req.body
+    const { title, done, parent_id } = req.body
     queries
-      .createTodo(title)
+      .createTodo(title, done, parent_id)
       .then((todo) => res.json(todo[0]))
       .catch((error) => next(error))
   } catch (error) {
@@ -70,9 +70,9 @@ router.delete('/:id', validate(deleteTodoValidation), (req, res, next) => {
 router.put('/:id', validate(updateTodoValidation), (req, res, next) => {
   try {
     const { id } = req.params
-    const { title } = req.body
+    const { title, done, parent_id } = req.body
     queries
-      .updateTodoById(id, { title })
+      .updateTodoById(id, { title, done, parent_id })
       .then((todo) => {
         if (todo[0]) {
           return res.json(todo[0])
