@@ -17,4 +17,12 @@ module.exports = {
       },
     },
   }),
+  deleteTodoValidation: checkSchema({
+    id: {
+      in: ['params'],
+      isInt: {
+        errorMessage: 'id should be an integer',
+      },
+    },
+  }),
 }

@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const { validate } = require('../../middlewares/validate')
-const { createTodoValidation, getTodoValidation } = require('./validation')
+const { createTodoValidation, getTodoValidation, deleteTodoValidation } = require('./validation')
 const queries = require('./queries')
 
 router.get('/', (req, res, next) => {
@@ -39,6 +39,23 @@ router.post('/', validate(createTodoValidation), (req, res, next) => {
     queries
       .createTodo(title)
       .then((todo) => res.json(todo[0]))
+      .catch((error) => next(error))
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.delete('/:id', validate(deleteTodoValidation), (req, res, next) => {
+  try {
+    const { id } = req.params
+    queries
+      .deleteTodoById(id)
+      .then((todo) => {
+        if (todo[0]) {
+          return res.json(todo[0])
+        }
+        next(`Todo with id: ${id} does not exist`)
+      })
       .catch((error) => next(error))
   } catch (error) {
     next(error)
