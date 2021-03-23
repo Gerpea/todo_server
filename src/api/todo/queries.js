@@ -13,7 +13,11 @@ function getTodos() {
 }
 
 function deleteTodoById(id) {
-  return knex('todos').where({ id }).del(['id', 'title', 'created_at', 'updated_at'])
+  return knex('todos').where({ id }).delete(['id', 'title', 'created_at', 'updated_at'])
+}
+
+function updateTodoById(id, data) {
+  return knex('todos').where({ id }).update(data, ['id', 'title', 'created_at', 'updated_at'])
 }
 
 module.exports = {
@@ -21,4 +25,5 @@ module.exports = {
   getTodoById,
   getTodos,
   deleteTodoById,
+  updateTodoById,
 }

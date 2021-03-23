@@ -25,4 +25,18 @@ module.exports = {
       },
     },
   }),
+  updateTodoValidation: checkSchema({
+    id: {
+      in: ['params'],
+      isInt: {
+        errorMessage: 'id should be an integer',
+      },
+    },
+    title: {
+      in: ['body'],
+      isString: {
+        errorMessage: 'title should be a string',
+      },
+    },
+  }),
 }
