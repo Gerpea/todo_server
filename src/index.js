@@ -18,20 +18,17 @@ app.use(bodyParser.json())
 app.use(passport.initialize())
 app.use(morgan('dev'))
 
-require('./utils/passport')(passport)
+require('./middlewares/passport')(passport)
+
+const { userAuth } = require('./middlewares/userAuth')
+const { handleError } = require('./utils/error')
 
 app.use('/auth', authRoute)
-app.use('/todo', userAuth, todoRoute)
+app.use('/todo', todoRoute)
 
 app.use((error, req, res, next) => {
-  const status = error.status || StatusCodes.INTERNAL_SERVER_ERROR
-  const message = error.message || error.detail || error
-  return res.status(status).json({
-    error: {
-      message,
-      errors: error.errors,
-    },
-  })
+  console.log(error)
+  handleError(error, res)
 })
 
 app.listen(config.PORT, config.HOSTNAME, () => {

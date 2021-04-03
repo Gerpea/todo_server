@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const asyncHandler = require('express-async-handler')
 
 const { StatusCodes } = require('../../utils')
 
@@ -11,80 +12,65 @@ const {
   updateTodoValidation,
 } = require('./validation')
 const queries = require('./queries')
+const { ErrorHandler } = require('../../utils/error')
 
-router.get('/', (req, res, next) => {
-  try {
-    queries
-      .getTodos()
-      .then((todos) => res.json(todos))
-      .catch((error) => next(error))
-  } catch (error) {
-    next(error)
-  }
-})
+router.get(
+  '/',
+  asyncHandler(async (req, res) => {
+    const todos = awaitqueries.getTodos()
+    res.json(todos)
+  })
+)
 
-router.get('/:id', validate(getTodoValidation), (req, res, next) => {
-  try {
+router.get(
+  '/:id',
+  validate(getTodoValidation),
+  asyncHandler(async (req, res) => {
     const { id } = req.params
-    queries
-      .getTodoById(id)
-      .then((todo) => {
-        if (todo) {
-          return res.json(todo)
-        }
-        next({ status: StatusCodes.NOT_FOUND, message: `Todo with id: ${id} does not exist` })
-      })
-      .catch((error) => next(error))
-  } catch (error) {
-    next(error)
-  }
-})
+    const todo = await queries.getTodoById(id)
 
-router.post('/', validate(createTodoValidation), (req, res, next) => {
-  try {
+    if (todo) {
+      res.json(todo)
+    } else {
+      throw new ErrorHandler(StatusCodes.NOT_FOUND, `Todo with id: ${id} does not exist`)
+    }
+  })
+)
+
+router.post(
+  '/',
+  validate(createTodoValidation),
+  asyncHandler(async (req, res) => {
     const { title, done, parent_id } = req.body
-    queries
-      .createTodo(title, done, parent_id)
-      .then((todo) => res.json(todo[0]))
-      .catch((error) => next(error))
-  } catch (error) {
-    next(error)
-  }
-})
+    const createdTodo = await queries.createTodo(title, done, parent_id)
+    res.json(createdTodo[0])
+  })
+)
 
-router.delete('/:id', validate(deleteTodoValidation), (req, res, next) => {
-  try {
+router.delete(
+  '/:id',
+  validate(deleteTodoValidation),
+  asyncHandler(async (req, res) => {
     const { id } = req.params
-    queries
-      .deleteTodoById(id)
-      .then((todo) => {
-        if (todo[0]) {
-          return res.json(todo[0])
-        }
-        next({ status: StatusCodes.NOT_FOUND, message: `Todo with id: ${id} does not exist` })
-      })
-      .catch((error) => next(error))
-  } catch (error) {
-    next(error)
-  }
-})
+    const deletedTodo = await queries.deleteTodoById(id)
 
-router.put('/:id', validate(updateTodoValidation), (req, res, next) => {
-  try {
+    if (deletedTodo[0]) {
+      res.json(deletedTodo[0])
+    } else {
+      throw new ErrorHandler(StatusCodes.NOT_FOUND, `Todo with id: ${id} does not exist`)
+    }
+  })
+)
+
+router.put(
+  '/:id',
+  validate(updateTodoValidation),
+  asyncHandler(async (req, res) => {
     const { id } = req.params
     const { title, done, parent_id } = req.body
-    queries
-      .updateTodoById(id, { title, done, parent_id })
-      .then((todo) => {
-        if (todo[0]) {
-          return res.json(todo[0])
-        }
-        next({ status: StatusCodes.NOT_FOUND, message: `Todo with id: ${id} does not exist` })
-      })
-      .catch((error) => next(error))
-  } catch (error) {
-    next(error)
-  }
-})
+    const todo = await queries.updateTodoById(id, { title, done, parent_id })
+    return res.json(todo[0])
+  })
+)
 
 module.exports = router

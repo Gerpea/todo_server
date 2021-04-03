@@ -12,7 +12,7 @@ module.exports = {
       custom: {
         options: (value) => {
           return queries.getUserByUsername(value).then((user) => {
-            if (!user) {
+            if (user) {
               return Promise.reject(`user with username: ${value} already exist`)
             } else {
               return Promise.resolve(true)

@@ -6,7 +6,7 @@ exports.up = function (knex) {
       table.increments('id')
 
       table.string('username').notNullable()
-      table.boolean('password').notNullable()
+      table.string('password').notNullable()
 
       table.timestamps(true, true)
     })
